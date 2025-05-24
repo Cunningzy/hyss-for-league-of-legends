@@ -1,0 +1,121 @@
+import { app as electronApp, BrowserWindow } from 'electron';
+
+
+export function messageBoxGame(text: string, time = 5000, xProps = 10, yProps = 10) {
+  const dialogWindow = new BrowserWindow({ // 
+    width: 500, //
+    height: 600, //
+    x: xProps, // 
+    y: yProps, // 
+    parent: BrowserWindow.getFocusedWindow(), // 
+    modal: false, // 
+
+    frame: false, // can be standart os windiows
+
+    transparent: true, //
+    webPreferences: { //
+      nodeIntegration: true, // 
+      contextIsolation: false // 
+    }
+  });
+
+  const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 50vh; 
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      user-select: none;
+     
+    }
+    .notification-container {
+      position: relative;
+    }
+    .dialog {
+      background: rgba(5, 0, 80, 0.781);
+      padding: 20px;
+      border-radius: 35px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      max-width: 100%;
+      font-size: 10px;
+    
+      animation: moveUpDown 0.5s infinite alternate ease-in-out;
+    }
+    @keyframes moveUpDown {
+      0% {
+        transform: translateY(0);
+      }
+      100% {
+        transform: translateY(-30px); 
+      }
+    }
+    h2 {
+      color: white;
+      margin: 0 0 15px;
+      font-size: 12px;
+      border-radius: 15px;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      word-wrap: break-word;
+    }
+    button {
+      background-color: #4CAF50;
+      color: black;
+      border: none;
+      padding: 10px 30px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 14px;
+      border-radius: 15px;
+      cursor: pointer;
+     
+      transition: background-color 0.1s ease;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <div class="notification-container">
+    <div class="dialog" id="draggableDialog">
+      <h2>Time to open the HYSS browser extension and stretch!</h2>
+      <button id="closeButton">OK</button>
+    </div>
+  </div>
+
+  <script>
+    const dialog = document.getElementById('draggableDialog');
+    const closeButton = document.getElementById('closeButton');
+    const notificationContainer = document.querySelector('.notification-container');
+
+    closeButton.addEventListener('click', () => {
+     
+      dialog.style.animation = 'none';
+     
+      dialog.style.opacity = 0;
+      dialog.style.transform = 'translateY(-20px)'; 
+      dialog.style.transition = 'opacity 0.1s ease-in-out, transform 0.1s ease-in-out';
+
+      setTimeout(() => {
+        notificationContainer.remove();
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
+`;
+
+  dialogWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(htmlContent)}`);
+  setTimeout(() => {
+    dialogWindow.destroy()
+  }, time)
+}
+
